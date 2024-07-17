@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Practice</title>
+    <style>
+ body {
+  
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header, footer {
+    border: 1px solid black;
+    color: rgb(5, 4, 4);
+    text-align: center;
+    padding: 1em 0;
+}
+
+.left-side-nav {
+    width: 200px;
+    height: 26rem;
+   border: 1px solid red;
+    padding-top: 20px;
+    position: fixed;
+    top: 112px;
+    bottom: 60px;
+    left: 0;
+    overflow: auto;
+}
+
+.left-side-nav div {
+    padding: 3px 11px;
+}
+
+.left-side-nav div a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+}
+
+.left-side-nav div a:hover {
+    background-color: #555;
+    color: white;
+}
+
+.content {
+    margin-left: 220px;
+    padding: 1em;
+    flex: 1;
+}
+
+.content-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-page {
+    margin-top: 20px;
+}
+.dataViewPage{
+    margin-top: 20px;
+
+}
+
+form div {
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid rgb(221, 9, 9);
+}
+
+th, td {
+    padding: 6px;
+    text-align: left;
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <h3>Header</h3>
+    </header>
+    <div class="content">
+        <div class="left-side-nav">
+            <div><a href="#" id="addLink">Add</a></div>
+            <div><a href="#" id="viewLink">View</a></div>
+        </div>
+        <div class="content-body">
+            <div class="form-page" id="formPage">
+              
+                <form id="addForm">
+                    <div>
+                        <label>First Name</label>
+                        <input type="text" name="First_Name" required>
+                    </div>
+                    <div>
+                        <label>Last Name</label>
+                        <input type="text" name="Last_Name" required>
+                    </div>
+                    <div>
+                        <label>Subject</label>
+                        <select name="Subject" required>
+                            <option value="Math">Math</option>
+                            <option value="English">English</option>
+                            <option value="Bio">Bio</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Standard X</label>
+                        <input type="checkbox" name="Standard" value="X">
+                    </div>
+                    <div><button type="submit">Submit</button></div>
+                </form>
+            </div>
+            <div class="dataViewPage" id="dataViewPage" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Subject</th>
+                            <th>Standard</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsTable">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <h3>Footer</h3>
+    </footer>
+   <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const addLink = document.getElementById("addLink");
+    const viewLink = document.getElementById("viewLink");
+    const formPage = document.getElementById("formPage");
+    const dataViewPage = document.getElementById("dataViewPage");
+    const addForm = document.getElementById("addForm");
+    const recordsTable = document.getElementById("recordsTable");
+
+    addLink.addEventListener("click", function() {
+        formPage.style.display = "block";
+        dataViewPage.style.display = "none";
+    });
+
+    viewLink.addEventListener("click", function() {
+        formPage.style.display = "none";
+        dataViewPage.style.display = "block";
+        displayRecords();
+    });
+
+    addForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(addForm);
+        const record = {};
+        formData.forEach((value, key) => {
+            if (key === "Standard") {
+                record[key] = formData.getAll(key).length > 0 ? "X" : "";
+            } else {
+                record[key] = value;
+            }
+        });
+        saveRecord(record);
+        addForm.reset();
+        
+    });
+
+    function saveRecord(record) {
+        let records = JSON.parse(localStorage.getItem("records")) ;
+        records.push(record);
+        localStorage.setItem("records", JSON.stringify(records));
+    }
+
+    function displayRecords() {
+        recordsTable.innerHTML = "";
+        const records = JSON.parse(localStorage.getItem("records"));
+        records.forEach(record => {
+            const row = recordsTable.insertRow();
+            row.insertCell(0).innerText = record.First_Name;
+            row.insertCell(1).innerText = record.Last_Name;
+            row.insertCell(2).innerText = record.Subject;
+            row.insertCell(3).innerText = record.Standard;
+        });
+    }
+});
+   </script>
+</body>
+
+</html>
